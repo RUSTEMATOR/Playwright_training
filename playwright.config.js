@@ -20,7 +20,7 @@ const config  = defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 2,
+  retries: process.env.CI ? 0 : 0,
   /* Opt out of parallel tests on CI. */
   workers: 1,
 

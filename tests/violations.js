@@ -1,0 +1,48 @@
+class Violations{
+    emailViolations = [
+        'plainaddress',
+        '@missingusername.com',
+        'username@.com',
+        'username@.com.',
+        'username@domain.c',
+        'username@domain.corporate',
+        'username@domain,com',
+        'username@domain@domain.com',
+        'username@domain.com (Joe Smith)',
+        'username@domain.com.',
+        'username@domain.com-',
+        'username@domain.com_',
+        'username@domain.com!',
+        'username@domain.com#',
+        'username@domain.com$',
+        'username@domain.com%',
+        'username@domain.com^',
+        'username@domain.com&',
+        'username@domain.com*',
+        'username@domain.com(',
+        'username@domain.com)',
+        'username@domain.com+',
+        'username@domain.com=',
+        'username@domain.com{',
+        'username@domain.com}',
+        'username@domain.com[',
+        'username@domain.com]',
+        'username@domain.com|',
+        'username@domain.com\\',
+        'username@domain.com:',
+        'username@domain.com;',
+        'username@domain.com"',
+        'username@domain.com<',
+        'username@domain.com>',
+        'username@domain.com,',
+        'username@domain.com?',
+        'username@domain.com/',
+        'username@domain..com',
+        'username@domain.com..',
+        'username@domain.com...',
+    ]
+}
+
+const violations = new Violations();
+export default violations;
+     

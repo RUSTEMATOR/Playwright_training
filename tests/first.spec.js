@@ -1,213 +1,220 @@
 import {test, expect } from '@playwright/test';
 import customMethods from './methods';
 import violations from './violations';
+import WelcomePage from '../src/pageObjects/welcomePage/WelcomePage';
+
 
 test.describe('Positive Reg form tests', async () => {
-
+  let RegPopUp;
+  let randomEmail;
   test.describe('Reg test', async () => {
+    test.beforeEach('Enter the site', async ({page}) => {
+      const welcomePage = new WelcomePage(page)
+      await welcomePage.navigate();
+      RegPopUp = await welcomePage.header.clickRegButton();
+      randomEmail = customMethods.generateRandomEmail();
+    })
 
-    test.skip('Positive registration', async ({page}) => {
-      const randomEmail = customMethods.generateRandomEmail();
-
-      await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
-      await page.locator('#signupName').fill('Rako');
-      await page.locator('#signupLastName').fill('Krako');
-      await page.locator('#signupEmail').fill(randomEmail);
+    test('Positive registration', async ({page}) => {
+      await RegPopUp.fillIn({name: 'Rako', lastName: 'Krako', email: randomEmail, password: '193786Az()', passRepeat: '193786Az()'});
       customMethods.writeToFile('logins.txt', randomEmail);
-      await page.locator('#signupPassword').fill('193786Az()');
-      await page.locator('#signupRepeatPassword').fill('193786Az()');
-      await page.locator('div.modal-footer > button.btn.btn-primary').click();
 
-      await expect(page.getByRole('button', {name: 'Add car'})).toBeVisible();
+      const garagePage = await RegPopUp.submitRegistration();
+
+      await expect(garagePage.addCarBtn).toBeVisible();
     })
   })
 })
   
   test.describe('Check visibility of the reg form fields', async () => {
+      let RegPopUp;
 
       test.beforeEach('Enter the site', async ({page}) => {
-        await page.goto('/');
-        await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+        const welcomePage = new WelcomePage(page)
+        await welcomePage.navigate();
+        RegPopUp = await welcomePage.header.clickRegButton();
+        
       })
 
       test('Check if reg form opens', async ({page}) => {
-        await expect(page.locator('app-signup-modal')).toBeVisible();
+        await expect(RegPopUp.regPopUpModal).toBeVisible();
       })
 
       test('Check if name field is visible', async ({page}) => {
-        await expect(page.locator('#signupName')).toBeVisible();
+        await expect((RegPopUp.nameField)).toBeVisible();
       })
 
       test('Check if surname field is visible', async ({page}) => {
-        await expect(page.locator('#signupLastName')).toBeVisible();
+        await expect(RegPopUp.lastNameField).toBeVisible();
       })
 
       test('Check if email field is visible', async ({page}) => {
-        await expect(page.locator('#signupEmail')).toBeVisible();
+        await expect(RegPopUp.passwordField).toBeVisible();
       })
       
       test('Check if password field is visible', async ({page}) => {
-        await expect(page.locator('#signupPassword')).toBeVisible();
+        await expect(RegPopUp.passwordField).toBeVisible();
       })
       
       
       test('Check if repeat password field is visible', async ({page}) => {
-        await expect(page.locator('#signupRepeatPassword')).toBeVisible();
+        await expect(RegPopUp.passRepeatField).toBeVisible();
       })
 
       test('Check if submit button is visible', async ({page}) => {
-        await expect(page.locator('div.modal-footer > button.btn.btn-primary')).toBeVisible();
+        await expect(await RegPopUp.submitRegisterBtn).toBeVisible();
 
       })
     })
 
   test.describe('Check if information can be entered', async () => {
+      let RegPopUp; 
     test.beforeEach('Enter the site', async ({page}) => {
-      await page.goto('/');
-      await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+      const welcomePage = new WelcomePage(page)
+      await welcomePage.navigate();
+      RegPopUp = await welcomePage.header.clickRegButton();
+
     })
 
     test('Check if name field accepts info', async ({page}) => {
-      await page.locator('#signupName').fill('Rako');
-      await page.locator('#signupName').blur();
-      await expect(page.locator('#signupName')).toHaveValue('Rako');
+      await RegPopUp.fillIn({name: 'Rako'})
+      await RegPopUp.nameField.blur();
+      await expect(RegPopUp.nameField).toHaveValue('Rako');
     })
 
     test('Check if surname field accepts info', async ({page}) => {
-      await page.locator('#signupLastName').fill('Krako');
-      await page.locator('#signupLastName').blur();
-      await expect(page.locator('#signupLastName')).toHaveValue('Krako');
+      await RegPopUp.fillIn({lastName: 'Krako'})
+      await RegPopUp.lastNameField.blur();
+      await expect(RegPopUp.lastNameField).toHaveValue('Krako');
     })
 
     test('Check if email field accepts info', async ({page}) => {
-      await page.locator('#signupEmail').fill('rako@roflan.com');
-      await page.locator('#signupEmail').blur();
-      await expect(page.locator('#signupEmail')).toHaveValue('rako@roflan.com');
+      await RegPopUp.fillIn({email: 'rako@roflan.com'})
+      await RegPopUp.emailField.blur();
+      await expect(RegPopUp.emailField).toHaveValue('rako@roflan.com');
     })
 
     test('Check if password field accepts info', async ({page}) => {
-      await page.locator('#signupPassword').fill('193786Az()');
-      await page.locator('#signupPassword').blur();
-      await expect(page.locator('#signupPassword')).toHaveValue('193786Az()');
+      await RegPopUp.fillIn({password: '193786Az()'});
+      await RegPopUp.passwordField.blur();
+      await expect(RegPopUp.passwordField).toHaveValue('193786Az()');
     })
 
     test('Check if repeat password field accepts info', async ({page}) => {
-      await page.locator('#signupRepeatPassword').fill('193786Az()');
-      await page.locator('#signupRepeatPassword').blur();
-      await expect(page.locator('#signupRepeatPassword')).toHaveValue('193786Az()');
+      await RegPopUp.fillIn({passRepeat: '193786Az()'});
+      await RegPopUp.passRepeatField.blur();
+      await expect(RegPopUp.passRepeatField).toHaveValue('193786Az()');
       })
     })
   
   test.describe('Positive. Check submit button clicability', async () => {
+    let RegPopUp
     test.beforeEach('Enter the site', async ({page}) => {
-      await page.goto('/');
-      await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+      const welcomePage = new WelcomePage(page)
+      await welcomePage.navigate();
+      RegPopUp = await welcomePage.header.clickRegButton();
     })
 
     test('Check if submit button is disabled when info is not entered', async ({page}) => {
-      await expect(page.locator('div.modal-footer > button.btn.btn-primary')).toBeDisabled();
+      await expect(RegPopUp.submitRegisterBtn).toBeDisabled();
     })
 
     test('Check if submit button is enabled when info is entered', async ({page}) => {
-      await page.locator('#signupName').fill('Rako');
-      await page.locator('#signupLastName').fill('Krako');
-      await page.locator('#signupEmail').fill('rako@roflan.com');
-      await page.locator('#signupPassword').fill('193786Az()');
-      await page.locator('#signupRepeatPassword').fill('193786Az()');
-      await expect(page.locator('div.modal-footer > button.btn.btn-primary')).toBeEnabled();
+      await RegPopUp.fillIn({name: 'Rako', lastName: 'Krako', email: 'rako@roflan.com', password: '193786Az()', passRepeat: '193786Az()'});
+      await RegPopUp.passRepeatField.blur();
+      await expect(RegPopUp.submitRegisterBtn).toBeEnabled();
     })
   })
 
 test.describe('Negative reg form test', async () => {
     test.describe('Negative. Check submit button clicability', async () => {
-      
+      let RegPopUp
     test.beforeEach('Enter the site', async ({page}) => {
-      await page.goto('/');
-      await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+      const welcomePage = new WelcomePage(page)
+      await welcomePage.navigate();
+      RegPopUp = await welcomePage.header.clickRegButton();
     })
         test('Check if submit button is disabled with name field only', async ({page}) => {
-          await page.locator('#signupName').fill('Rako');
-          await page.locator('#signupName').blur();
-          await expect(page.locator('div.modal-footer > button.btn.btn-primary')).toBeDisabled();
+          RegPopUp.fillIn({name: 'Rako'})
+          RegPopUp.nameField.blur();
+          await expect(RegPopUp.submitRegisterBtn).toBeDisabled();
         })
 
         test('Check if submit button is disabled with surname field only', async ({page}) => {
-          await page.locator('#signupLastName').fill('Krako');
-          await page.locator('#signupLastName').blur();
-          await expect(page.locator('div.modal-footer > button.btn.btn-primary')).toBeDisabled();
+          RegPopUp.fillIn({lastName: 'Krako'})
+          RegPopUp.lastNameField.blur();
+          await expect(RegPopUp.submitRegisterBtn).toBeDisabled();
         })
 
         test('Check if submit button is disabled with email field only', async ({page}) => {
-          await page.locator('#signupEmail').fill('rako@roflan.com');
-          await page.locator('#signupEmail').blur();
-          await expect(page.locator('div.modal-footer > button.btn.btn-primary')).toBeDisabled();
+          RegPopUp.fillIn({email: 'rako@roflan.com'})
+          RegPopUp.emailField.blur();
+
+          await expect(RegPopUp.submitRegisterBtn).toBeDisabled();
         })
 
         test('Check if submit button is disabled with password field only', async ({page}) => {
-          await page.locator('#signupPassword').fill('193786Az()');
-          await page.locator('#signupPassword').blur();
-          await expect(page.locator('div.modal-footer > button.btn.btn-primary')).toBeDisabled();
+          RegPopUp.fillIn({password: '193786Az()'})
+          RegPopUp.passwordField.blur();
+          await expect(RegPopUp.submitRegisterBtn).toBeDisabled();
         })
 
         test('Check if submit button is disabled with repeat password field only', async ({page}) => {
-          await page.locator('#signupRepeatPassword').fill('193786Az()');
-          await page.locator('#signupRepeatPassword').blur();
-          await expect(page.locator('div.modal-footer > button.btn.btn-primary')).toBeDisabled();
+          RegPopUp.fillIn({passRepeat: '193786Az()'})
+          RegPopUp.passRepeatField.blur();
+          await expect(RegPopUp.submitRegisterBtn).toBeDisabled();
         })
       })
     
     test.describe('Input fields validation', async () => {
       test.describe('Empty fields', async () => {
+        let RegPopUp;
           test.beforeEach('Enter the site', async ({page}) => {
-            await page.goto('/');
-            await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+            const welcomePage = new WelcomePage(page)
+            await welcomePage.navigate();
+            RegPopUp = await welcomePage.header.clickRegButton();
           })
           
             test('Check if name field shows error message when not filled', async ({page}) => {
-              await page.locator('#signupName').focus();
-              await page.locator('#signupName').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                          .filter({hasText: 'Name required'})).toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Name required'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupName')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+              RegPopUp.nameField.focus();
+              RegPopUp.nameField.blur();
+
+              await expect(RegPopUp.nameFieldErr).toBeVisible()
+              await expect(RegPopUp.nameFieldErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.nameField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
             })
             
             test('Check if last name field shows error message when not filled', async ({page}) => {
-              await page.locator('#signupLastName').focus();
-              await page.locator('#signupLastName').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                          .filter({hasText: 'Last name required'})).toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Last name required'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+              RegPopUp.lastNameField.focus();
+              RegPopUp.lastNameField.blur();
+
+              await expect(RegPopUp.lastNameFieldErr).toBeVisible()
+              await expect(RegPopUp.lastNameFieldErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.lastNameField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
             })
             test('Check if email field shows error message when not filled', async ({page}) => {
-              await page.locator('#signupEmail').focus();
-              await page.locator('#signupEmail').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                          .filter({hasText: 'Email required'})).toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Email required'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupEmail')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+              RegPopUp.emailField.focus();
+              RegPopUp.emailField.blur();
+
+              await expect(RegPopUp.emailFieldErr).toBeVisible()
+              await expect(RegPopUp.emailFieldErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.emailField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
             })
             test('Check if password field shows error message when not filled', async ({page}) => {
-              await page.locator('#signupPassword').focus();
-              await page.locator('#signupPassword').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                          .filter({hasText: 'Password required'})).toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Password required'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+              RegPopUp.passwordField.focus();
+              RegPopUp.passwordField.blur();
+
+              await expect(RegPopUp.passwordFieldErr).toBeVisible()
+              await expect(RegPopUp.passwordFieldErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.passwordField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
             })
             test('Check if repeat password field shows error message when not filled', async ({page}) => {
-              await page.locator('#signupRepeatPassword').focus();
-              await page.locator('#signupRepeatPassword').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                          .filter({hasText: 'Re-enter password required'})).toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Re-enter password required'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+              RegPopUp.passRepeatField.focus();
+              RegPopUp.passRepeatField.blur();
+
+              await expect(RegPopUp.passRepeatFieldErr).toBeVisible()
+              await expect(RegPopUp.passRepeatFieldErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.passRepeatField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
             })
           })
         })
@@ -215,143 +222,159 @@ test.describe('Negative reg form test', async () => {
 
     test.describe('Wrong input', async () => {
       test.describe('Less than needed', async () => {
+        let RegPopUp;
           test.beforeEach('Enter the site', async ({page}) => {
-            await page.goto('/');
-            await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+            const welcomePage = new WelcomePage(page)
+            await welcomePage.navigate();
+            RegPopUp = await welcomePage.header.clickRegButton();
           })
             
             test('Check if name field shows error message when less than 2 characters', async ({page}) => {
-              await page.locator('#signupName').fill('A');
-              await page.locator('#signupName').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                              .filter({hasText: 'Name has to be from 2 to 20 characters long'})).toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Name has to be from 2 to 20 characters long'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupName')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+              RegPopUp.fillIn({name: 'A'})
+              RegPopUp.nameField.focus();
+              RegPopUp.nameField.blur();
+              await expect(RegPopUp.nameFieldLengthErr).toBeVisible()
+
+
+              await expect(RegPopUp.nameFieldLengthErr).toBeVisible()
+              await expect(RegPopUp.nameFieldLengthErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.nameField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
             })
 
             test('Check if last name field shows error message when less than 2 characters', async ({page}) => {
-              await page.locator('#signupLastName').fill('A');
-              await page.locator('#signupLastName').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                              .filter({hasText: 'Last name has to be from 2 to 20 characters long'})).toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Last name has to be from 2 to 20 characters long'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+              RegPopUp.fillIn({lastName: 'A'})
+              RegPopUp.lastNameField.focus();
+              RegPopUp.lastNameField.blur();
+
+          
+              await expect(RegPopUp.lastNameFieldLengthErr).toBeVisible()
+              await expect(RegPopUp.lastNameFieldLengthErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.lastNameField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
             })
 
             test('Check if password field shows error message when less than 8 characters', async ({page}) => {
-              await page.locator('#signupPassword').fill('1234567');
-              await page.locator('#signupPassword').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                              .filter({hasText: 'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter'}))
-                              .toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter'}))
-                              .toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+              RegPopUp.fillIn({password: 'Abc'})
+              RegPopUp.passwordField.focus();
+              RegPopUp.passwordField.blur();
+
+              await expect(RegPopUp.passwordFieldLengthErr).toBeVisible()
+              await expect(RegPopUp.passwordFieldLengthErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.passwordField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
             })
           })
       })
       test.describe('More than needed', async () => {
+        let RegPopUp;
         test.beforeEach('Enter the site', async ({page}) => {
-          await page.goto('/');
-          await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+          const welcomePage = new WelcomePage(page)
+          await welcomePage.navigate();
+          RegPopUp = await welcomePage.header.clickRegButton();
         })
           test('Check if name field shows error message when more than 20 characters', async ({page}) => {
-            await page.locator('#signupName').fill('RakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrako');
-            await page.locator('#signupName').blur();
-            await expect(page.locator('div.invalid-feedback > p')
-                            .filter({hasText: 'Name has to be from 2 to 20 characters long'})).toBeVisible()
-            await expect(page.locator('div.invalid-feedback > p')
-            .filter({hasText: 'Name has to be from 2 to 20 characters long'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-            await expect(page.locator('#signupName')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+            await RegPopUp.fillIn({name: 'RakoKrakoRakoKrakoRakoKrakoRakoKrakokoRakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrako'})
+            RegPopUp.nameField.focus();
+            RegPopUp.nameField.blur();
+            await expect(RegPopUp.nameFieldLengthErr).toBeVisible()
+            await expect(RegPopUp.nameFieldLengthErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+            await expect(RegPopUp.nameField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
           })
 
           test('Check if last name field shows error message when more than 20 characters', async ({page}) => {
-            await page.locator('#signupLastName').fill('RakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrako');
-            await page.locator('#signupLastName').blur();
-            await expect(page.locator('div.invalid-feedback > p')
-                            .filter({hasText: 'Last name has to be from 2 to 20 characters long'})).toBeVisible()
-            await expect(page.locator('div.invalid-feedback > p')
-            .filter({hasText: 'Last name has to be from 2 to 20 characters long'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-            await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+            await RegPopUp.fillIn({lastName: 'RakoKrakoRakoKrakoRakoKrakoRakoKrakokoRakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrakoRakoKrako'})
+            RegPopUp.lastNameField.focus();
+            RegPopUp.lastNameField.blur();
+            
+            await expect(RegPopUp.lastNameFieldLengthErr).toBeVisible()
+            await expect(RegPopUp.lastNameFieldLengthErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+            await expect(RegPopUp.lastNameField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
           })
 
           test('Check if password field shows error message when more than 15 characters', async ({page}) => {
-            await page.locator('#signupPassword').fill('1234567890123456');
-            await page.locator('#signupPassword').blur();
-            await expect(page.locator('div.invalid-feedback > p')
-                            .filter({hasText: 'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter'}))
-                            .toBeVisible()
-            await expect(page.locator('div.invalid-feedback > p')
-            .filter({hasText: 'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter'}))
-                            .toHaveCSS('border-color', 'rgb(220, 53, 69)');
-            await expect(page.locator('#signupPassword')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+            await RegPopUp.fillIn({password: '123456789012345678'})
+            RegPopUp.passwordField.focus();
+            RegPopUp.passwordField.blur();
+
+            await expect(RegPopUp.passwordFieldLengthErr).toBeVisible()
+            await expect(RegPopUp.passwordFieldLengthErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+            await expect(RegPopUp.passwordField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
       
       
           })
       test.describe('Email input violations', async () => {
+        let RegPopUp;
         test.beforeEach('Enter the site', async ({page}) => {
-          await page.goto('/');
-          await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+          const welcomePage = new WelcomePage(page)
+          await welcomePage.navigate();
+          RegPopUp = await welcomePage.header.clickRegButton();
         })
           
           test.describe.parallel('Check if email field shows error message when email is not valid', async () => {
+
             for (const email of violations.emailViolations) {
               test(`Check ${email}`, async ({page}) => {
-              await page.locator('#signupEmail').focus();
-              await page.locator('#signupEmail').fill(email);
+              await RegPopUp.fillIn({email: email})
+              await RegPopUp.emailField.focus();
               await page.locator('#signupEmail').blur();
-              await expect(page.locator('div.invalid-feedback > p')
-                              .filter({hasText: 'Email is incorrect'})).toBeVisible()
-              await expect(page.locator('div.invalid-feedback > p')
-              .filter({hasText: 'Email is incorrect'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-              await expect(page.locator('#signupEmail')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+
+     
+              await expect(RegPopUp.emailFieldViolationErr).toBeVisible()
+              await expect(RegPopUp.emailFieldViolationErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+              await expect(RegPopUp.emailField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
               })
             }
      
     test.describe('Numerals in name and last name', async () => {
-
+      let RegPopUp;
       test.beforeEach('Enter the site', async ({page}) => {
-        await page.goto('/');
-        await page.locator('.hero-descriptor_btn.btn.btn-primary').click();
+        const welcomePage = new WelcomePage(page)
+        await welcomePage.navigate();
+        RegPopUp = await welcomePage.header.clickRegButton();
       })
           
           test('Check if name field shows error message when contains numerals', async ({page}) => {
+            RegPopUp.fillIn({name: '123'})
+            RegPopUp.nameField.focus();
+            RegPopUp.nameField.blur();
             await page.locator('#signupName').fill('123');
             await page.locator('#signupName').blur();
-            await expect(page.locator('div.invalid-feedback > p')
-                            .filter({hasText: 'Name invalid'})).toBeVisible()
+            await expect(RegPopUp.nameFieldViolationErr).toBeVisible()
                             
-            await expect(page.locator('div.invalid-feedback > p')
-            .filter({hasText: 'Name invalid'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-            await expect(page.locator('#signupName')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+            await expect(RegPopUp.nameFieldViolationErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+            await expect(RegPopUp.nameFieldViolationErr).toHaveCSS('border-color', 'rgb(220, 53, 69)')
           })
 
           test('Check if last name field shows error message when contains numerals', async ({page}) => {
-            await page.locator('#signupLastName').fill('123');
-            await page.locator('#signupLastName').blur();
-            await expect(page.locator('div.invalid-feedback > p')
-                            .filter({hasText: 'Name invalid'})).toBeVisible()
+            RegPopUp.fillIn({lastName: '123'})
+            RegPopUp.lastNameField.focus();
+            RegPopUp.lastNameField.blur();
+
+            
+            await expect(RegPopUp.lastNameFieldViolationErr).toBeVisible()
                             
-            await expect(page.locator('div.invalid-feedback > p')
-            .filter({hasText: 'Name invalid'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-            await expect(page.locator('#signupLastName')).toHaveCSS('border-color', 'rgb(220, 53, 69)')
+            await expect(RegPopUp.lastNameFieldViolationErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+            await expect(RegPopUp.lastNameField).toHaveCSS('border-color', 'rgb(220, 53, 69)')
           })
     })
       
     test.describe('Passwords do not match', async () => {
+      let RegPopUp;
+      test.beforeEach('Enter the site', async ({page}) => {
+        const welcomePage = new WelcomePage(page)
+        await welcomePage.navigate();
+        RegPopUp = await welcomePage.header.clickRegButton();
+      })
           
           //should fail
           test('Check if password field shows error message when passwords do not match', async ({page}) => {
-            await page.locator('#signupPassword').fill('12345678');
-            await page.locator('#signupRepeatPassword').fill('1234567');
-            await page.locator('#signupRepeatPassword').blur();
-            await expect(page.locator('div.invalid-feedback > p')
-                            .filter({hasText: 'Passwords do not match'})).toBeVisible();
-            await expect(page.locator('div.invalid-feedback > p')
-            .filter({hasText: 'Passwords do not match'})).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+            const welcomePage = new WelcomePage(page)
+            const RegPopUp = await welcomePage.header.clickRegButton();
+
+            RegPopUp.fillIn({password: '12345678', repeatPassword: '1234567'})
+            RegPopUp.passwordField.focus();
+            RegPopUp.passwordField.blur();
+
+            await expect(RegPopUp.passDontMatchErr).toBeVisible();
+            await expect(RegPopUp.passDontMatchErr).toHaveCSS('border-color', 'rgb(220, 53, 69)');
           })
         })                    
      })

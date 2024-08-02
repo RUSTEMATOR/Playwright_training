@@ -3,3 +3,10 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/.DS_Store
+/logins.txt
+/playwright-report 2/
+/playwright-report 2
+logins.txt/
+logins.txt
+

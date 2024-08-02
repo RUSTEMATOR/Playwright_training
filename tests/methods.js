@@ -13,7 +13,7 @@ class CustomMethods {
     }
 
     writeToFile(filename, content){
-        fs.appendFileSync(filename, content);
+        fs.appendFileSync(filename, '\n' + content);
     }
 }
 

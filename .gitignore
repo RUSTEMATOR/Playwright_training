@@ -10,3 +10,4 @@ node_modules/
 logins.txt/
 logins.txt
 
+.env

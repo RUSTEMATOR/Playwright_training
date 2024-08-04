@@ -4,7 +4,7 @@ import violations from './violations';
 import WelcomePage from '../src/pageObjects/welcomePage/WelcomePage';
 import GaragePage from '../src/pageObjects/garagePage/GaragePage';
 
-test.describe('Positive Reg form tests', async () => {
+test.describe.only('Positive Reg form tests', async () => {
   let regPopUp;
   let randomEmail;
   test.describe('Reg test', async () => {

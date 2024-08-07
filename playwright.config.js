@@ -61,9 +61,16 @@ const config  = defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: "setup:stage",
+       testMatch: 'tests/setup/**/*.setup.js'
+    },
+
+    {
       name: 'chromium',
+      dependencies: ['setup:stage'],
       use: { ...devices['Desktop Chrome'] },
     },
+    
 
     // {
     //   name: 'firefox',

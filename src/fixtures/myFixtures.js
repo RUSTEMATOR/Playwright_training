@@ -15,7 +15,9 @@ export const test = base.extend({
         await ctx.close()
     },
 
-    request: async ({}, use ) => {
+
+    
+    APIrequest: async ({}, use ) => {
         const ctx = await APIrequest.newContext({
         storageState: USER1_STORAGE_STATE_PATH
     })

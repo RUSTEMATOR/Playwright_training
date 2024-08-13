@@ -1,68 +1,5 @@
-
 import { test, expect} from '../src/fixtures/myFixtures';
-
-
-const mockedCarBrands = {
-
-    'status': 'ok',
-    'data': [
-        {
-            "id": 1, 
-            "title": "Audi",
-            "logoFilename": "audi.png"
-        },
-        
-        {
-            "id": 2, 
-            "title": "BMW",
-            "logoFilename": "bmw.png"
-        },
-    ]
-}
-
-
-const mockedProfileData = {
-    "status": "ok",
-    "data": {
-        "userId": 135220,
-        "photoFilename": "default-user.png",
-        "name": "Shako",
-        "lastName": "Burako"
-    }
-}
-
-
-const expected = 
-    {
-        "status": "ok",
-        "data": [
-            {
-                "id": 1,
-                "title": "Audi",
-                "logoFilename": "audi.png"
-            },
-            {
-                "id": 2,
-                "title": "BMW",
-                "logoFilename": "bmw.png"
-            },
-            {
-                "id": 3,
-                "title": "Ford",
-                "logoFilename": "ford.png"
-            },
-            {
-                "id": 4,
-                "title": "Porsche",
-                "logoFilename": "porsche.png"
-            },
-            {
-                "id": 5,
-                "title": "Fiat",
-                "logoFilename": "fiat.png"
-            }
-        ]
-    }
+import {mockedCarBrands, mockedProfileData, expected} from '..//src//data//mocks';
 
 
 test.describe('Garage API tests', () => {
@@ -110,7 +47,7 @@ test.describe('Garage API tests', () => {
 
             await page.reload()
 
-            await expect(usergaragePage.profileName).toHaveText('Shako Burako') 
+            await expect(usergaragePage.profileName).toHaveText(`${mockedProfileData.data.name} ${mockedProfileData.data.lastName}`) 
         })
 
 

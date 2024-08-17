@@ -28,7 +28,7 @@ export const mockedProfileData = {
 }
 
 
-export const expected = 
+export const expectedResponse = 
     {
         "status": "ok",
         "data": [

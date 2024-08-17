@@ -11,3 +11,5 @@ logins.txt/
 logins.txt
 
 .env
+
+/state

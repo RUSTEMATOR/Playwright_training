@@ -35,7 +35,7 @@ const config  = defineConfig({
   ['list', { output: 'test_result.txt' }],
   ['html'],
   [
-    process.env.CI ? 'github' : 'list'
+    process.env.CI ? 'playwright-ctrf-json-reporter' : 'list'
   ],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

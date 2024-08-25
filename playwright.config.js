@@ -25,9 +25,9 @@ const config  = defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 0 : 0,
+  retries: 3,
   /* Opt out of parallel tests on CI. */
-  workers: 1,
+  workers: 3,
 
   
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -68,7 +68,8 @@ const config  = defineConfig({
     {
       name: 'chromium',
       dependencies: ['setup:stage'],
-      use: { ...devices['Desktop Chrome'] },
+      testMatch: 'tests/**/*.spec.js',
+      use: { ...devices['Desktop Chrome'] }
     },
     
 

@@ -10,19 +10,19 @@ test.describe('Creation negative and positive tests API', async () => {
     
     let carID = null
 
-    test.afterEach(async ({APIrequest}) => {
-        const carsList = await APIrequest.get('/api/cars')
+    test.afterEach(async ({apiRequest}) => {
+        const carsList = await apiRequest.get('/api/cars')
         const {data: cars} = await carsList.json()
 
         for (const car of cars) {
-            const res = await APIrequest.delete(`/api/cars/${car.id}`)
+            const res = await apiRequest.delete(`/api/cars/${car.id}`)
             await expect(res).toBeOK()
             carID = null
         }
     })
 
 
-    test('API create car positive', async ({APIrequest}) => {
+    test('API create car positive', async ({apiRequest}) => {
         
         const requestBody = {
             'carBrandId': 1,
@@ -30,7 +30,7 @@ test.describe('Creation negative and positive tests API', async () => {
             'mileage': 1234
         }
 
-        const response = await APIrequest.post('api/cars', {
+        const response = await apiRequest.post('api/cars', {
             data: requestBody
         })
         const body = await response.json()
@@ -38,14 +38,14 @@ test.describe('Creation negative and positive tests API', async () => {
         expect(body.data, 'Car should be created').toMatchObject(requestBody)
     })
 
-    test('Missing data field Negative API test', async ({APIrequest}) => {
+    test('Missing data field Negative API test', async ({apiRequest}) => {
 
         const requestBody = {
             'carBrandId': 1,
             'mileage': 1234
         }
 
-        const response = await APIrequest.post('api/cars', {
+        const response = await apiRequest.post('api/cars', {
             data: requestBody
         })
         const body = await response.json()
@@ -53,7 +53,7 @@ test.describe('Creation negative and positive tests API', async () => {
         expect(response.status()).toBe(400)
     })
 
-    test('API negative, creating a car with wrong model', async ({APIrequest}) => {
+    test('API negative, creating a car with wrong model', async ({apiRequest}) => {
 
         const requestBody = {
             'carBrandId': 1,
@@ -62,7 +62,7 @@ test.describe('Creation negative and positive tests API', async () => {
             'mileage': 1234
         }
 
-        const response = await APIrequest.post('api/cars', {
+        const response = await apiRequest.post('api/cars', {
             data: requestBody
         })
 
@@ -77,12 +77,12 @@ test.describe('Parametrized test', async () => {
 
     let carID = null
 
-    test.afterEach(async ({APIrequest}) => {
-        const carsList = await APIrequest.get('/api/cars')
+    test.afterEach(async ({apiRequest}) => {
+        const carsList = await apiRequest.get('/api/cars')
         const {data: cars} = await carsList.json()
 
         for (const car of cars) {
-            const res = await APIrequest.delete(`/api/cars/${car.id}`)
+            const res = await apiRequest.delete(`/api/cars/${car.id}`)
             await expect(res).toBeOK()
             carID = null
         }
@@ -97,7 +97,7 @@ test.describe('Parametrized test', async () => {
                 const models = CAR_MODELS.Models[brand]
 
                 for (const model of Object.values(models)) {
-                    test.only(`Create ${carKey}, check ${brand} with ${model.title}`, async ({APIrequest}) => { 
+                    test(`Create ${carKey}, check ${brand} with ${model.title}`, async ({apiRequest}) => { 
                         const requestBody = {
                             "carBrandId": car.id,
                             "carModelId": model.id,
@@ -106,7 +106,7 @@ test.describe('Parametrized test', async () => {
 
                         console.log('Request Body:', requestBody);
 
-                        const response = await APIrequest.post('/api/cars', {
+                        const response = await apiRequest.post('/api/cars', {
                             data: requestBody
                         })
 

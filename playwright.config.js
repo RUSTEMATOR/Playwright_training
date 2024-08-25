@@ -34,11 +34,14 @@ const config  = defineConfig({
   reporter: [
   ['list', { output: 'test_result.txt' }],
   ['html'],
+  [
+    process.env.CI ? 'github' : 'list'
+  ],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
 
-    headless: false,
+    headless: true,
 
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASE_URL,

@@ -1,0 +1,45 @@
+name: 'Playwright test'
+
+
+on: 
+  workflow_dispatch:
+    inputs:
+      deployment_target:
+        description: Choose target
+        required: true
+        type: choice
+        choices:
+          - Run test
+
+jobs:
+    api-tests:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository 
+            uses: actions/checkout@v4
+            with: 
+                ref: ${{ github.ref }}
+          - name: "Install node js"
+            uses: actions/setup-node@v4
+            with:
+                node-version: 20
+          -name: Install dependencies
+            run: npm install
+          - name: Run tests
+
+            env:
+              ENV: dev
+              HTTP_CREDENTIALS_USERNAME: guest
+              HTTP_CREDENTIALS_PASSWORD: welcome2qauto
+              BASE_URL: https://qauto.forstudy.space
+
+          run: npm run test
+          - name: Upload report to artifacts
+            uses: codecov/codecov-action@v3
+            if: always()
+            uses: actions/upload-artifact@v4
+            with:
+              name: ci-report
+              path: playwright-report/
+              retention-days: 3
+

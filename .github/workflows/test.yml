@@ -6,9 +6,8 @@ on:
       deployment_target:
         description: Choose target
         required: true
-        type: choice
-        options:
-          - Run tests
+        type: string
+        default: Run tests
 
 jobs:
   test:

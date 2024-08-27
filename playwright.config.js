@@ -25,20 +25,23 @@ const config  = defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 0 : 0,
+  retries: 3,
   /* Opt out of parallel tests on CI. */
-  workers: 1,
+  workers: 3,
 
   
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
   ['list', { output: 'test_result.txt' }],
   ['html'],
+  [
+    process.env.CI ? 'playwright-ctrf-json-reporter' : 'list'
+  ],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
 
-    headless: false,
+    headless: true,
 
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASE_URL,
@@ -68,7 +71,8 @@ const config  = defineConfig({
     {
       name: 'chromium',
       dependencies: ['setup:stage'],
-      use: { ...devices['Desktop Chrome'] },
+      testMatch: 'tests/**/*.spec.js',
+      use: { ...devices['Desktop Chrome'] }
     },
     
 

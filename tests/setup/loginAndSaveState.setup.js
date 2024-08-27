@@ -17,6 +17,10 @@ setup.describe('Session Storage', () => {
                 "remember": false
             }
         })
+        await request.storageState({
+            path: USER1_STORAGE_STATE_PATH
+
+       })  
         if (!fs.existsSync(USER1_STORAGE_STATE_PATH)){
         await request.storageState({
             path: USER1_STORAGE_STATE_PATH

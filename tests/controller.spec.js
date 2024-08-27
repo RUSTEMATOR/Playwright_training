@@ -224,11 +224,11 @@ playwrightTest.describe('GET current users cars', () => {
 
             const cars = await responseCars.json()
 
-            console.log(cars)
 
-            expect(cars).toEqual(expectedResponse.ofCurrentCars)
+            expect(cars.data).toEqual(expectedResponse.ofCurrentCars)
 
-            console.log(`\n${JSON.stringify(cars)}\n\n${JSON.stringify(expectedResponse.ofCurrentCars)}`)
+            console.log(`${JSON.stringify(cars.data)}\n`)
+            console.log(`${JSON.stringify(expectedResponse.ofCurrentCars)}`)
 
 
 

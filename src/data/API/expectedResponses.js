@@ -152,32 +152,30 @@ export default class ExpectedResponse{
         ]
       }
 
-    ofCurrentCars = {
-        "status": "ok",
-    "data": [
-        {
-            "id": 189944,
-            "carBrandId": 1,
-            "carModelId": 2,
-            "initialMileage": 1234,
-            "updatedMileageAt": "2024-08-24T21:34:30.000Z",
-            "carCreatedAt": "2024-08-24T21:34:30.000Z",
-            "mileage": 1234,
-            "brand": "Audi",
-            "model": "R8",
-            "logo": "audi.png"
-        },
-        {
-            "id": 189940,
-            "carBrandId": 1,
-            "carModelId": 1,
-            "initialMileage": 123,
-            "updatedMileageAt": "2024-08-24T21:01:29.000Z",
-            "carCreatedAt": "2024-08-24T21:01:29.000Z",
-            "mileage": 123,
-            "brand": "Audi",
-            "model": "TT",
-            "logo": "audi.png"
-        }]
-    }   
-  }
+    ofCurrentCars = [
+          {
+              "id": 190587,
+              "carBrandId": 1,
+              "carModelId": 2,
+              "initialMileage": 12345,
+              "updatedMileageAt": "2024-08-26T21:00:18.000Z",
+              "carCreatedAt": "2024-08-26T21:00:18.000Z",
+              "mileage": 12345,
+              "brand": "Audi",
+              "model": "R8",
+              "logo": "audi.png"
+          },
+          {
+              "id": 190586,
+              "carBrandId": 1,
+              "carModelId": 1,
+              "initialMileage": 123,
+              "updatedMileageAt": "2024-08-26T21:00:10.000Z",
+              "carCreatedAt": "2024-08-26T21:00:10.000Z",
+              "mileage": 123,
+              "brand": "Audi",
+              "model": "TT",
+              "logo": "audi.png"
+          }
+        ]
+       }

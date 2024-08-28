@@ -6,6 +6,8 @@ import AuthController from '../src/controllers/authController';
 import { test as playwrightTest, request } from '@playwright/test';
 import CarsController from '../src/controllers/CarsController';
 import { faker } from '@faker-js/faker';
+import { USERS } from '../src/data/users';
+import fs from 'fs'
 
 
 
@@ -195,11 +197,15 @@ test.describe('GET car models by id', () => {
 
 
 playwrightTest.describe('GET current users cars', () => {
+    
     const expectedResponse = new ExpectedResponse
-    const email = "ogrmnij_usereoyj8XTf8l@roflan.com"
-    const password = "193786Az()"
+    const email = USERS.USER2.email
+    const password = USERS.USER2.password
+    let createdCar
+    let carID
     
     playwrightTest.beforeEach(async ({request}) => {
+        const carsController = new CarsController(request);
         const responseBody = {
             "email": email,
             "password": password,
@@ -215,20 +221,55 @@ playwrightTest.describe('GET current users cars', () => {
         console.log('Signed in')
         console.log(logged)
 
+        const mileage = faker.number.int({min: 123, max: 600})
+    
+        const carRequestBody ={ "carBrandId": 1,
+        "carModelId": 1,
+        "mileage": mileage
+        }
+
+        const createCarResponse = await carsController.createCar(carRequestBody)
+
+        createdCar = await createCarResponse.json()
+
+        console.log('Created Car:', createdCar)
+
+
     });
+
+    playwrightTest.afterEach(async ({request}) => {
+        const carsController = new CarsController(request);
+        const carsList = await carsController.getCars()
+        const {data: cars} = await carsList.json()
+
+        for (const car of cars) {
+            const res = await carsController.deleteCar(car.id)
+            await expect(res).toBeOK()
+            carID = null
+        }
+    })
 
         playwrightTest('Get current cars of the logged user', async ({request}) => {
             const carsController = new CarsController(request);
-            
+
             const responseCars = await carsController.getCars()
 
-            const cars = await responseCars.json()
-
+            const {data: cars} = await responseCars.json()
+            
             console.log(cars)
 
-            expect(cars).toEqual(expectedResponse.ofCurrentCars)
+            cars.forEach(car => {
+                delete car.carCreatedAt;
+                delete car.updatedMileageAt;
+            });
 
-            console.log(`\n${JSON.stringify(cars)}\n\n${JSON.stringify(expectedResponse.ofCurrentCars)}`)
+            delete createdCar.data.carCreatedAt;
+            delete createdCar.data.updatedMileageAt;
+
+            expect(cars).toEqual([createdCar.data])
+
+            console.log(`${JSON.stringify(cars)}\n`)
+            console.log(`${JSON.stringify([createdCar.data])}`)
 
 
 
@@ -383,8 +424,10 @@ test.describe('EDIT current users cars', async () => {
 
             const carID = createdCar.data.id;
 
+            newMileage = 500
+
             const changeBody = {
-                'mileage': 500
+                'mileage': newMileage
             }
 
             const responseEditedCar = await carsController.editCar(carID, changeBody)
@@ -392,7 +435,7 @@ test.describe('EDIT current users cars', async () => {
             const changedCar = await responseEditedCar.json()
             
             const updatedMileage = JSON.stringify(changedCar.data.mileage)
-            expect(changedCar.data.mileage).toBe(500)
+            expect(changedCar.data.mileage).toBe(newMileage)
 
             console.log(updatedMileage)
 
